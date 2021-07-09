@@ -1,0 +1,409 @@
+# dbcsp
+
+## Example
+First, get two classes of the sample data, `come` and `five` for example.
+```
+x1 <- AR.data$come
+x2 <- AR.data$five
+```
+Create an S4 object of class 'dbcsp'
+```
+mydbcsp <- new('dbcsp', X1=x1, X2=x2)
+summary(mydbcsp)
+print(mydbcsp)
+```
+By default, euclidean distance is used. To change it, just select another distance type. A mixture with euclidean distance and another one can be performed too, changing the `mixture` parameter value.
+```
+mydbcsp <- new('dbcsp', X1=x1, X2=x2, type='dtw')
+mydbcsp <- new('dbcsp', X1=x1, X2=x2, mixture=TRUE, type='COR') #EUCL + COR
+```
+It is also possible to select the number of vectors `q` to use in the projection. The default value is `q=15`.
+```
+mydbcsp <- new('dbcsp', X1=x1, X2=x2, q=10)
+```
+By default, the training is not performed, but this can be changed and the number of folds to use in the cross-validation can be selected. Linear Discriminant Analysis (LDA) classifier is used to perform the classification, with the logarithm of the variances obtained after the CSP projection.
+```
+mydbcsp <- new('dbcsp', X1=x1, X2=x2, training=TRUE, fold=10)
+```
+A summary of the object can be generated with the `summary` function.
+```
+> summary(mydbcsp)
+There are 46 instances of class x1 with [50x92] dimension.
+There are 45 instances of class x2 with [50x92] dimension.
+The DB-CSP method has used 15 vectors for the projection.
+EUCL distance has been used.
+An accuracy of 0.8463889 has been obtained with 10 fold cross validation.
+```
+The summary tells us the number of instances for each class, the number of vectors `q` and the distance `type` used. If the classification is performed, it also tells us the obtained accuracy value with the used number of folds `fold`.
+
+The classification can be also performed after creating the object, calling to `train` function.
+```
+> mydbcsp <- new('dbcsp',X1=x1, X2=x2)
+> summary(mydbcsp)
+There are 46 instances of class x1 with [50x92] dimension.
+There are 45 instances of class x2 with [50x92] dimension.
+The DB-CSP method has used 15 vectors for the projection.
+EUCL distance has been used.
+Classification has not been performed yet.
+> mydbcsp <- train(mydbcsp)
+46 instances for x1 class and 45 instances for x2 class.
+Applying DB-CSP with EUCL distance and 15 projections.
+Fold 1 - 82 training instances, 9 test instances - Acc: 0.7777778 
+Fold 2 - 82 training instances, 9 test instances - Acc: 1 
+Fold 3 - 82 training instances, 9 test instances - Acc: 0.8888889 
+Fold 4 - 83 training instances, 8 test instances - Acc: 0.875 
+Fold 5 - 82 training instances, 9 test instances - Acc: 0.6666667 
+Fold 6 - 83 training instances, 8 test instances - Acc: 0.75 
+Fold 7 - 81 training instances, 10 test instances - Acc: 0.9 
+Fold 8 - 81 training instances, 10 test instances - Acc: 0.7 
+Fold 9 - 81 training instances, 10 test instances - Acc: 0.7 
+Fold 10 - 82 training instances, 9 test instances - Acc: 1 
+Final accuracy: 0.825833333333333 
+> summary(mydbcsp)
+There are 46 instances of class x1 with [50x92] dimension.
+There are 45 instances of class x2 with [50x92] dimension.
+The DB-CSP method has used 15 vectors for the projection.
+EUCL distance has been used.
+An accuracy of 0.8258333 has been obtained with 10 fold cross validation. 
+```
+The `out` slot of the object includes the csp output, including proy `object@out$proy`,vectors `object@out$vectors` and eigen values `object@out$eig`, and the training output if it is performed (accuracy `object@out$acc`, folds accuracy `object@out$folds_acc`, used folds `object@out$used_folds`, trained model `object@out$model` and the selected q value when training `object@out$selected_q`).
+```
+> mydbcsp@out$acc
+[1] 0.8258333
+> mydbcsp@out$folds_acc
+[1] 0.7777778 1.0000000 0.8888889 0.8750000 0.6666667 0.7500000 0.9000000 0.7000000 0.7000000 1.0000000
+> mydbcsp@out$used_folds
+$Fold01
+[1]  1 26 38 44 70 72 75 76 84
+$Fold02
+[1]  9 18 22 36 41 48 59 62 63
+$Fold03
+[1]  3 14 23 39 49 50 69 71 78
+$Fold04
+[1] 15 16 37 42 53 55 87 91
+$Fold05
+[1] 10 13 21 31 46 52 65 74 81
+$Fold06
+[1]  5  7  8 20 57 80 88 89
+$Fold07
+ [1]  4 11 24 25 32 56 60 61 67 83
+$Fold08
+ [1] 27 33 34 43 45 54 64 66 79 90
+$Fold09
+ [1]  2  6 28 29 30 47 68 77 85 86
+$Fold10
+[1] 12 17 19 35 40 51 58 73 82
+> mydbcsp@out$vectors
+                B1            B2            B3           B4           B5            B6            B7           B8           B9
+ [1,] -0.061726369 -0.0497482230 -0.2567184012  0.026947829 -0.193035790 -0.2997850686  0.0546807637  0.081120134  0.455003958
+ [2,]  0.123168014  0.0414484153  0.1897973883 -0.249680210  0.241335514  0.1207770505 -0.1179665116  0.142823323 -0.199108587
+ [3,] -0.108132121  0.0580154072  0.0807479441 -0.016920545  0.071932589 -0.2932081080 -0.0300956101 -0.160936652  0.033146994
+ [4,]  0.004880829 -0.0012337889  0.0067966727  0.065862165 -0.007127742  0.0748281845 -0.0160163500  0.040758704  0.048765853
+ [5,] -0.033526344 -0.0069832348 -0.0912992662  0.022501525  0.068833632 -0.0177871463  0.0276684526 -0.019378728 -0.031086117
+ [6,]  0.200736232  0.0123133534 -0.1501021399 -0.075135517  0.135508451 -0.0523488564 -0.1294107145  0.050233056  0.307292214
+ [7,] -0.114136463  0.0034324772  0.0834015705  0.129669377 -0.020281359  0.0237939468  0.0428043529  0.145737305 -0.122826810
+ [8,]  0.010047441  0.0030796146 -0.0211625784 -0.018690330 -0.078920602 -0.0211216526 -0.0014345898  0.005515821  0.003017529
+ [9,]  0.180565332  0.0009236857  0.0093865978  0.077310006  0.076451416  0.0930539776 -0.0261688193 -0.051381833  0.139690855
+[10,] -0.333049809  0.0059724971  0.1228829172  0.158939001 -0.153348560  0.0006191220 -0.0010729397  0.007448235 -0.082994267
+[11,] -0.034756871  0.0026009373  0.0099104832 -0.029598672  0.060953422 -0.0810398463 -0.0214330988  0.046274291 -0.036458498
+[12,] -0.104015516 -0.0123819827 -0.0959998366  0.095767564  0.037853212  0.0656310618  0.0236132221 -0.039409267 -0.004919892
+[13,]  0.244013199  0.0104724248 -0.1620324489 -0.257521244 -0.005960928 -0.0585614396  0.1067262794 -0.259056660  0.037039014
+[14,] -0.025058500 -0.0425077264 -0.0124559812  0.033179170 -0.025633838  0.0212734376 -0.0336693087  0.128340379 -0.134579810
+[15,] -0.056716624 -0.0124616596 -0.0337246175  0.176640221 -0.033120009 -0.0125217470  0.1854822841  0.225174822 -0.154728622
+[16,] -0.251652375  0.2585256200  0.0915386778 -0.437709412  0.118736090  0.4715687589  0.2246257224  0.246370340  0.075443872
+[17,] -0.053788999 -0.3649940748  0.0260303019 -0.098426773  0.301723437 -0.1380976529 -0.1605045362  0.014494198 -0.454664894
+[18,] -0.168054657  0.0404866877 -0.0346298743  0.231054218 -0.446801247 -0.0028651656 -0.0162108639 -0.213585609  0.015600835
+[19,]  0.400840841  0.0186092596  0.0144021582  0.419555609 -0.182077895  0.1676028758  0.0579420189 -0.169119821 -0.087270761
+[20,]  0.006936330 -0.0308290115  0.0334841079 -0.100574253 -0.055067472 -0.0187429596 -0.2769932572  0.082118534 -0.034766383
+[21,]  0.008782444  0.0492820119 -0.0362499021  0.073455148  0.152331140 -0.0009058959  0.3411967043 -0.039800765  0.114825528
+[22,]  0.041952771  0.0162499027  0.0824876715 -0.131185943 -0.028943370 -0.0047444076 -0.2559065109 -0.322271327  0.084417885
+[23,]  0.218475092 -0.0106121183 -0.1575933399 -0.204627313 -0.194953666  0.0473318892 -0.1613614410 -0.120959472 -0.036691046
+[24,] -0.254268542  0.0117868086  0.0873158159  0.101183095  0.146036203 -0.0194374508  0.0433332945  0.146251906  0.067335312
+[25,]  0.169486258 -0.0016152044  0.2104623403 -0.010127349 -0.016155517 -0.0669082569  0.1419081232  0.049412435 -0.008361872
+[26,] -0.248868078  0.0631899711  0.0552265008  0.137500208  0.050035576  0.0804231365 -0.0423994134 -0.069044159  0.026556663
+[27,] -0.093285779  0.0743011123 -0.2175294691 -0.134821109 -0.315300095 -0.1100453203 -0.1529670891  0.115346897 -0.225597171
+[28,]  0.151408979  0.0248073414  0.1320938942 -0.075560016  0.188025810  0.1341076877  0.2368112818 -0.034257845  0.144506231
+[29,] -0.032117248 -0.0080278754  0.0007732527  0.040686070  0.019540602  0.0227365864 -0.0427555415  0.003150382  0.014970079
+[30,]  0.001034805  0.0017332014 -0.0002858144 -0.007025721  0.001901324 -0.0230314944  0.0226100369 -0.007143038 -0.011909036
+[31,]  0.017811731 -0.0698985795  0.0189639542  0.055594835 -0.040194582 -0.1005089530  0.2073858842 -0.162181492 -0.067177502
+[32,]  0.019816774  0.0069234004  0.0216072815  0.019036336  0.085866530 -0.0115550760 -0.0017548142  0.018068571  0.010663216
+[33,] -0.027333534  0.0010617905  0.0036000684  0.020386392 -0.012033166  0.0052515771  0.0143763942  0.004507963 -0.017945515
+               B10          B11           B12          B13           B14          B15            S1            S2           S3
+ [1,]  0.142502082  0.088249676  0.2699982679 -0.120711763 -0.1637561229 -0.330460944 -0.0056316090 -0.0319349691 -0.018087237
+ [2,] -0.223798633 -0.178480665 -0.3899322464  0.062379931  0.1587992194  0.082270903  0.0647868582  0.0968300676 -0.141342405
+ [3,] -0.069106468  0.042166274  0.2031929810 -0.138602397 -0.0446705826 -0.141350480  0.1132644247 -0.0492784351 -0.033730336
+ [4,]  0.161280250  0.021359191  0.0032263403 -0.067317553 -0.0276428050  0.032767746  0.0165747967 -0.0788123497  0.029106723
+ [5,] -0.033872543  0.003286565 -0.0005974046  0.040828543  0.0105508406 -0.004644338 -0.0011564380 -0.0224890476  0.006516181
+ [6,]  0.030495474  0.082483427 -0.0689398379  0.071691444 -0.1305410092 -0.022412424  0.0815066171  0.0210256326 -0.073737939
+ [7,]  0.050820414 -0.060910975  0.0463787656 -0.041960525  0.0691468016 -0.125895142  0.0131114716  0.0045436541  0.126165826
+ [8,]  0.008734050  0.020973123  0.0095044592  0.017916446  0.0003234039  0.096580431 -0.0074084272 -0.0795431302 -0.084183291
+ [9,] -0.255513858 -0.014685815 -0.2325578076 -0.060763321  0.3143004422  0.145875555  0.0189895927  0.0167244391  0.164987305
+[10,]  0.005831813  0.048578871  0.1796583347 -0.042751266  0.0255553764 -0.051115695  0.0005203644  0.0807758005  0.103093380
+[11,]  0.041175609 -0.087644506 -0.1129978336  0.051723198 -0.0677448488  0.030508787 -0.0473158276  0.0886687123 -0.103357886
+[12,] -0.146175538 -0.107117623 -0.2920478447 -0.159890298 -0.0150222371 -0.055454623 -0.1405745387 -0.0656760579 -0.085219520
+[13,]  0.182758321 -0.040936113  0.2549904936  0.018912834 -0.2438643783  0.004571821 -0.0344526022  0.0079602908 -0.016982828
+[14,]  0.006198222  0.064688291  0.1114619781  0.028059585 -0.0098429642 -0.024990888 -0.0046226664 -0.0501490603 -0.021977130
+[15,]  0.391857113 -0.088640045 -0.0471962595 -0.237516308 -0.4062912283 -0.098545207 -0.1353793336 -0.0489483538  0.278339644
+[16,] -0.064073917 -0.274035828 -0.0250288587  0.121214764 -0.0382512299  0.155239782 -0.0643447960  0.0411896354 -0.030854006
+[17,]  0.104825363  0.156621352 -0.1028704597  0.068834178  0.2474862961  0.095189847  0.0077185573 -0.0629885910  0.081061589
+[18,]  0.106585751  0.161103052 -0.1996562263  0.131433098 -0.1143643757  0.063000454 -0.0989652367  0.0431915641 -0.033548808
+[19,] -0.197024162 -0.025727254  0.0579424364 -0.096113920  0.0032028361 -0.031803230 -0.1204915847  0.0057601159 -0.019705896
+[20,] -0.153350122  0.026081230  0.1067689021  0.169545245 -0.2155819848  0.076099388  0.0057793917  0.0003825203  0.005211441
+[21,] -0.116172389  0.042626257 -0.1338693859 -0.177091124  0.3223688255 -0.029575120  0.0559650379 -0.0205363537  0.035649099
+[22,] -0.072657262 -0.019594554  0.0555244592  0.259386407  0.2630145317  0.134717996  0.1027405991  0.0541734434 -0.274841777
+[23,]  0.089004242 -0.032065680  0.0741662978 -0.280402172 -0.0343800126 -0.047433146  0.0962839112  0.1164739273  0.072845843
+[24,] -0.061967792  0.019402745 -0.0710843769  0.220986509  0.0859986424  0.108616823 -0.0733075366 -0.0854903939 -0.061663494
+[25,]  0.080012413  0.152739105  0.3067393429  0.173071656  0.0295953358 -0.046613046  0.1437505347  0.0207164006  0.108449838
+[26,] -0.150154610  0.239333465  0.3385831006  0.230863845  0.0292606905  0.176143220  0.2062384202  0.1423788664  0.021603865
+[27,]  0.329542883 -0.073416158  0.0064963985  0.173313143 -0.3025525968 -0.405337667  0.0859030604 -0.1779732508 -0.050319575
+[28,] -0.153233879  0.485897218 -0.0712850280 -0.188099647  0.0757021188  0.233145797 -0.1670255011  0.6320005139 -0.045991855
+[29,]  0.060433493 -0.016866171 -0.0116841328  0.006070123  0.0194828985  0.011674017  0.0655833526 -0.3427339409 -0.009802049
+[30,] -0.043373018 -0.009881617  0.0045282008  0.001748168 -0.0215236529 -0.010376388  0.0061092348 -0.0057692402 -0.006528758
+[31,] -0.149960574 -0.262522929 -0.0385968682 -0.054180373  0.2399860936  0.354439468 -0.1857949669 -0.2248709923 -0.023563341
+[32,]  0.051804702 -0.009366860  0.1656074552  0.015708170  0.0493793651 -0.048383520 -0.0755008191  0.0198127506  0.372540909
+[33,] -0.016943680  0.017996917 -0.0627105208 -0.008140490 -0.0293464806  0.004129602  0.0575652567  0.0445896900  0.034659930
+                S4           S5           S6           S7           S8            S9           S10          S11          S12
+ [1,]  0.032397740  0.027928551  0.021724610  0.062574490  0.045031970  2.759793e-02 -9.392218e-02 -0.003961133  0.170247823
+ [2,]  0.032279001  0.128016193  0.041958695  0.016032837  0.018853028 -8.301255e-02  1.457909e-01 -0.058718624  0.002069987
+ [3,] -0.043897387  0.033926475  0.037605088 -0.065593199  0.133376728  6.734788e-02  4.233751e-02 -0.040805483  0.175599242
+ [4,] -0.009350346 -0.030137008  0.006260226  0.002790202 -0.121529242 -1.182007e-01 -4.517796e-02  0.013639537 -0.053736648
+ [5,]  0.015618596 -0.021769747  0.008908243  0.061435226 -0.004945569  3.762102e-02  9.875009e-03 -0.053809920 -0.023919331
+ [6,] -0.030254365 -0.085974355 -0.064006709  0.054693842  0.049336696  1.459989e-02 -3.524134e-02  0.049708717 -0.033895270
+ [7,]  0.016239724  0.009135143 -0.032941684 -0.007402840 -0.015785814  1.648699e-02 -6.858137e-02 -0.067526092  0.058723756
+ [8,]  0.029624984 -0.059147239  0.002924715 -0.032472496  0.026722321 -3.805495e-02  5.337635e-02 -0.021471885 -0.056399635
+ [9,]  0.006254551  0.110125460 -0.125384243 -0.050397002 -0.197779262 -1.892628e-03  7.069437e-02  0.083523314 -0.120529730
+[10,]  0.087406534 -0.075075814 -0.057293524 -0.025057163  0.130397214  1.173485e-01 -2.113914e-02 -0.117301787  0.109659784
+[11,] -0.090394551  0.203025990 -0.078636435  0.028032862 -0.163684052 -1.491995e-01 -1.177200e-02  0.203423325 -0.088107242
+[12,]  0.014884685 -0.134511975  0.190203194 -0.070685880  0.114184022  3.232846e-05  5.586852e-02 -0.070706574  0.203223227
+[13,] -0.092509187 -0.058808116  0.179139362  0.069371255  0.008450157  7.965707e-02  9.637389e-05 -0.013477043  0.073612533
+[14,] -0.021584344 -0.122625491  0.009312352 -0.125017630  0.121639099 -1.767063e-01 -1.274495e-01  0.042503108  0.017798919
+[15,]  0.238595592  0.207665495  0.332468301  0.179030125 -0.106330799  3.620144e-01  1.285581e-01  0.317061011  0.128180184
+[16,] -0.005016480 -0.020658014 -0.005208722  0.005214052 -0.004884944  1.533892e-02  2.159188e-02  0.007719444 -0.011128779
+[17,] -0.023269076  0.105165453  0.016813767 -0.057501506 -0.109436673 -2.289869e-02  7.661077e-02 -0.005661647 -0.062965533
+[18,]  0.047372048 -0.087155656 -0.020187818 -0.005655965  0.099084114  6.274807e-02 -1.233959e-01  0.021266103 -0.159804553
+[19,] -0.008398283  0.027045639 -0.017286674 -0.011506200  0.003586142  6.429829e-03  4.159790e-02  0.030072959  0.033372091
+[20,] -0.002489575 -0.082196874 -0.080657847  0.082037331 -0.022419676 -8.480345e-03  1.108202e-01 -0.016517838 -0.016379673
+[21,]  0.017490493  0.079055386  0.022357963 -0.019928610 -0.115334315 -3.985091e-02 -1.367783e-01 -0.083172004 -0.001364783
+[22,] -0.211831612 -0.146363601 -0.250836615 -0.135801625  0.130342725 -2.046603e-01 -3.678251e-02 -0.195923109 -0.129435404
+[23,]  0.059795053  0.101785654 -0.209164087  0.003202768  0.106790451 -1.402646e-01  2.555248e-01 -0.286901875 -0.289952938
+[24,] -0.059755592 -0.143993533  0.187335980  0.079273170 -0.085701521  1.371673e-01 -2.209824e-01  0.325058613  0.345578958
+[25,] -0.001765055  0.062907728 -0.113566753 -0.021683577 -0.037743744  8.044682e-02 -7.915549e-02 -0.061083794 -0.268403088
+[26,] -0.052646907 -0.003270730  0.062871822  0.017976232 -0.083087234 -2.406911e-02 -6.915152e-02 -0.039815068  0.010136285
+[27,]  0.125319431 -0.083054823  0.058008747  0.032842186  0.039339135  2.991900e-02 -3.536447e-03  0.176116601 -0.154854844
+[28,] -0.046580113 -0.172383972 -0.036114531  0.173654273 -0.118866753  1.001207e-01 -7.192745e-02 -0.109806838  0.075744985
+[29,]  0.014988526  0.155730374 -0.029984502 -0.024641566  0.137853627  3.804115e-02  7.323470e-03  0.030933979 -0.007679021
+[30,]  0.001160705 -0.012540696  0.003665926 -0.002252281 -0.029723075 -1.951063e-02  5.894023e-03 -0.004793704  0.002064871
+[31,] -0.042498311 -0.100088042 -0.070593681 -0.091001547  0.033774484  2.364009e-02 -8.517363e-02  0.012049282  0.013623860
+[32,] -0.061314437  0.025835232 -0.092857933 -0.003245076 -0.078754364 -3.549129e-02  3.156189e-02  0.026340500 -0.033367603
+[33,] -0.015931955  0.043843094  0.012090727  0.021120085 -0.001831175 -4.598779e-04  1.063031e-03 -0.008497183  0.013476702
+                S13          S14          S15
+ [1,] -0.0551188009  0.020950022  0.134094614
+ [2,] -0.0121309247 -0.310011546  0.258914913
+ [3,]  0.0935653050  0.068313017 -0.126133000
+ [4,] -0.0654785170  0.006742449  0.026194263
+ [5,]  0.0340354564 -0.003914214 -0.042233454
+ [6,] -0.1070975548  0.019481418 -0.143584610
+ [7,]  0.0784315435  0.139956299 -0.014326436
+ [8,]  0.0314143773 -0.041772330  0.070758628
+ [9,] -0.2015793326 -0.223579522  0.055491069
+[10,] -0.0075407576 -0.113753983 -0.063587540
+[11,]  0.0222281923  0.119513193 -0.042681105
+[12,]  0.0769984444 -0.085973009 -0.052525276
+[13,]  0.0486116272  0.165454734 -0.101567404
+[14,]  0.0505984065 -0.022391331 -0.026874550
+[15,] -0.1040264369 -0.044033943 -0.073364114
+[16,]  0.0179249789 -0.059561137 -0.043069980
+[17,] -0.0247982394 -0.125467323 -0.048644750
+[18,]  0.1697377301  0.362502641 -0.076547094
+[19,]  0.0005497526 -0.062948301  0.055744376
+[20,]  0.0088632966  0.027556094  0.110028401
+[21,] -0.0446606408 -0.004368533 -0.074638056
+[22,]  0.1327277344 -0.008768517  0.071044093
+[23,] -0.1043119997  0.122748084 -0.211538630
+[24,]  0.0494008682 -0.100477430  0.252336919
+[25,] -0.0841578649  0.147783244  0.069943886
+[26,] -0.1495845678  0.193943936 -0.002297714
+[27,] -0.1380811980  0.231129305  0.142065139
+[28,]  0.2280079960 -0.128482766 -0.198935497
+[29,] -0.0073803328  0.018859370  0.030105425
+[30,]  0.0024744451 -0.011700367 -0.008517248
+[31,] -0.1820884872 -0.041138300 -0.145440493
+[32,]  0.1187277207  0.097328208  0.082002927
+[33,] -0.0150636249 -0.027613043  0.000546060
+ [ reached getOption("max.print") -- omitted 17 rows ]
+```
+Once the training has been performed, the `predict` function can be use to predict the targets of new instances.
+```
+> x1 <- AR.data$come[1:40]
+> x2 <- AR.data$five[1:40]
+> new_dbcsp <- new('dbcsp',x1,x2,training=TRUE)
+
+> t1 <- AR.data$come[41:45]
+> t2 <- AR.data$five[41:45]
+> test_data <- c(t1,t2)
+
+> predictions <- predict(new_dbcsp, test_data)
+Predictions:
+ [1] x1 x1 x1 x1 x1 x2 x2 x2 x1 x2
+Levels: x1 x2
+```
+And if `true_labels` are indicated, the obtained accuracy is also printed.
+```
+> true_labels <- c(rep('x1',length(t1)),rep('x2',length(t2)))
+> predictions <- predict(new_dbcsp, test_data,true_labels)
+Predictions:
+ [1] x1 x1 x1 x1 x1 x2 x2 x2 x1 x2
+Levels: x1 x2
+Predicted labels vs. Real labels
+    real_label
+     x1 x2
+  x1  5  1
+  x2  0  4
+Obtained accuracy:  0.9 
+```
+To help us deciding which is the best dimension to use when performing the CSP algorithm, the `selectQ` function can be used. The data is splitted in train and test, randomly selecting the percentage indicated by `train_size` for training and saving the rest of the instances for testesting. The dimensions to try are indicated by the parameter `Q`.
+```
+> bestQ <- selectQ(new_dbcsp)
+   Q  acc
+1  1 0.75
+2  2 0.85
+3  3 0.85
+4  5 0.80
+5 10 0.80
+6 15 0.75
+> print(bestQ)
+   Q  acc
+1  1 0.75
+2  2 0.85
+3  3 0.85
+4  5 0.80
+5 10 0.80
+6 15 0.75
+```
+By default `train_size = 0.75` and `Q = c(1,2,3,5,10,15)`, but these parameters can take othe values.
+```
+> bestQ <- selectQ(new_dbcsp,Q=c(10,15,20),train_size=0.8)
+   Q    acc
+1 10 0.8125
+2 15 0.7500
+3 20 0.6875
+> print(bestQ)
+   Q    acc
+1 10 0.8125
+2 15 0.7500
+3 20 0.6875
+```
+Instead of splitting data in train and test with the `train_size` percentage, a cross validation can be performed setting `CV=TRUE` and indicating the number of folds, by default `folds=10` and `CV=FALSE`.
+```
+> bestQ <- selectQ(new_dbcsp,CV=TRUE,folds=10)
+   Q    acc         sd
+1  1 0.7250 0.15365907
+2  2 0.8750 0.10206207
+3  3 0.9000 0.11486707
+4  5 0.8375 0.14493773
+5 10 0.7750 0.09860133
+6 15 0.7000 0.10540926
+> print(bestQ)
+   Q    acc         sd
+1  1 0.7250 0.15365907
+2  2 0.8750 0.10206207
+3  3 0.9000 0.11486707
+4  5 0.8375 0.14493773
+5 10 0.7750 0.09860133
+6 15 0.7000 0.10540926
+```
+Both in `train` and `selectQ` functions, a `seed` value can be indicated as parameter in order to replicate the results. This seed value can also be specified when creating the dbcsp object.
+
+
+After obtaining the `bestQ` values, the training and prediction process can be repeated, this time selecting the just the `bestQ` number of vectors when creating the classifier using the `selected_q` parameter of the `train` function.
+```
+> sel_q <- bestQ$Q[bestQ$acc == max(bestQ$acc)]
+> dbcsp_bestQ <- train(new_dbcsp, selected_q=sel_q) 
+40 instances for x1 class and 40 instances for x2 class.
+Applying DB-CSP with EUCL distance and 15 projections.
+3 projections are used when training the LDA classifier.
+Fold 1 - 72 training instances, 8 test instances - Acc: 0.875 
+Fold 2 - 72 training instances, 8 test instances - Acc: 0.75 
+Fold 3 - 72 training instances, 8 test instances - Acc: 1 
+Fold 4 - 72 training instances, 8 test instances - Acc: 0.875 
+Fold 5 - 72 training instances, 8 test instances - Acc: 1 
+Fold 6 - 72 training instances, 8 test instances - Acc: 1 
+Fold 7 - 72 training instances, 8 test instances - Acc: 0.625 
+Fold 8 - 72 training instances, 8 test instances - Acc: 0.875 
+Fold 9 - 72 training instances, 8 test instances - Acc: 0.875 
+Fold 10 - 72 training instances, 8 test instances - Acc: 1 
+Final accuracy: 0.8875 
+
+> predictions_bestQ <- predict(dbcsp_bestQ, test_data)
+3 projections have been used to train the LDA classifier.
+Predictions:
+ [1] x1 x1 x1 x1 x1 x2 x2 x2 x2 x2
+Levels: x1 x2
+
+> predictions_bestQ <- predict(dbcsp_bestQ, test_data, true_targets = true_labels)
+3 projections have been used to train the LDA classifier.
+Predictions:
+ [1] x1 x1 x1 x1 x1 x2 x2 x2 x2 x2
+Levels: x1 x2
+Predicted labels vs. Real labels
+    real_label
+     x1 x2
+  x1  5  0
+  x2  0  5
+Obtained accuracy:  1 
+```
+Using the `plot` command, a selected instance is plotted before and/or after the projection.
+```
+x1 <- AR.data$come
+x2 <- AR.data$five
+mydbcsp <- new('dbcsp', X1=x1, X2=x2)
+plot(mydbcsp) 
+```
+![plot1](/images/plot_example1.png)
+
+By default, the first instance of the first class is plotted, before and after the projection. Class and instance index can be changed, and it can be decide whether to show the signals only before or after the projection.
+```
+plot(mydbcsp,class=2,index=30,before=FALSE)
+```
+![plot2](/images/plot_example2.png)
+
+With the `vectors` parameter it can be decided which dimensions to show, by default every dimension used when performing the CSP are shown. For example, if `vectors=1:5` the first 5 dimensions (with their corresponding pairs) are plotted. Set `legend=TRUE` to show the legend.
+```
+plot(mydbcsp,class=2,index=30,before=FALSE,vectors = 1:5, legend=TRUE)
+```
+![plot3](/images/plot_example3.png)
+
+If `pairs=FALSE`, only the indicated vectors will be plotted. Otherwise, their pairs are also shown. By default, `pairs=TRUE`. The first `q` vectors have a line type and the last `q` vectors a different one. Each pair of vectors has a color, even if `pairs=FALSE` when two indicated vectors form a pair they are plotted with the same color.
+```
+plot(mydbcsp,class=2,index=30,before=FALSE,vectors = c(1,16,24), pairs=FALSE,legend=TRUE)
+```
+![plot4](/images/plot_example4.png)
+
+In order to better understand what the features used for classification look like, there is a function to show them with boxplots.
+```
+X1 <- AR.data$hello
+X2 <- AR.data$ignore
+mydbcsp <- new('dbcsp',X1,X2)
+boxplot(mydbcsp)
+```
+![plot5](/images/boxplot_default.png)
+
+The function has the option of selecting the indices of the vectors you want to see, if you want to see them in pairs and if the pairs should be ordered (each one next to its pair). By default: `index=1`, `pairs=TRUE` and `ordered_pairs=TRUE`.
+```
+boxplot(mydbcsp, vectors=c(2,4,8))
+```
+![plot6](/images/boxplot_index.png)
+```
+boxplot(mydbcsp, vectors=c(2,4,8), pairs=FALSE)
+```
+![plot7](/images/boxplot_pairsFalse.png)
+```
+boxplot(mydbcsp, vectors=c(2,4,8), ordered_pairs=FALSE)
+```
+![plot8](/images/boxplot_orderedFalse.png)
+
+Since the logarithms of the variances are used as features for the classification after performing the CSP, these are displayed by default, because they provide better visual information than the variances. However, using `show_log=FALSE` the values of the variances are plotted.
+```
+boxplot(mydbcsp, vectors=c(2,4,8), show_log=FALSE)
+```
+![plot9](/images/boxplot_index_variances.png)
