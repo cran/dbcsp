@@ -13,7 +13,7 @@
 
 \item{true_targets}{vector of true labels of the instances. Note that they must match the names of the labels used when training the model.}
 
-\item{...}{optional arguments inherited from the generic \code{\link{predict}} method.}
+\item{...}{not currently used.}
 }
 \value{
 The values returned by the LDA \code{\link[=predict.lda]{predict}} function, a list with these components:
@@ -35,7 +35,7 @@ the accuracy obtained is printed too.
 }
 \details{
 It gives the predictions for the test data using the model saved in the object, which has been previously trained with
-the \code{\link{train}} function. If the \code{true_targets} are indicated, the confusion matrix and obtained accuracy value are
+the \code{\link{train.dbcsp}} function. If the \code{true_targets} are indicated, the confusion matrix and obtained accuracy value are
 returned too.
 }
 \examples{
@@ -55,5 +55,5 @@ print(predictions$confusion_matrix)
 print(predictions$acc)
 }
 \seealso{
-\code{\link[=dbcsp-class]{dbcsp}}, \code{\link[=print.dbcsp]{print}}, \code{\link[=summary.dbcsp]{summary}}, \code{\link{train}}, \code{\link{selectQ}}, \code{\link[=plot.dbcsp]{plot}}, \code{\link[=boxplot.dbcsp]{boxplot}}
+\code{\link[=dbcsp-class]{dbcsp}}, \code{\link[=print.dbcsp]{print}}, \code{\link[=summary.dbcsp]{summary}}, \code{\link[=train.dbcsp]{train}}, \code{\link{selectQ}}, \code{\link[=plot.dbcsp]{plot}}, \code{\link[=boxplot.dbcsp]{boxplot}}
 }

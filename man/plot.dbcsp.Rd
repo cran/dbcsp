@@ -5,7 +5,7 @@
 \title{Plot function implemented by dbcsp class}
 \usage{
 \method{plot}{dbcsp}(x, class = 1, index = 1, vectors = 1:(x@q*2), pairs=TRUE,
-     before = TRUE, after = TRUE, legend = FALSE, ...)
+     before = TRUE, after = TRUE, legend = FALSE, getsignals = FALSE, ...)
 }
 \arguments{
 \item{x}{object of class \code{\link[=dbcsp-class]{dbcsp}}.}
@@ -24,12 +24,15 @@
 
 \item{legend}{logical, if true the legend of the transformed signals is shown, by default \code{legend=FALSE}. When plotting more than 15 pairs of signals (15*2=30 signals), the legend is not shown. If \code{before=TRUE} legends are not displayed.}
 
-\item{...}{optional arguments inherited from the generic \code{\link{plot}} method.}
+\item{getsignals}{logical, if TRUE the projected signals for the selected class, instance and vectors are returned, by default \code{getsignals=FALSE}.}
+
+\item{...}{optional arguments inherited from the \code{\link{matplot}} method.}
 }
 \value{
 Displays a plot of the selected instance before and/or after the DB-CSP filter projection.
 The vectors shown after the projection are differentiated by the q first and q last vectors,
 since the former maximize the variance of one class and minimize the variance of the other, while the latter do the opposite.
+If \code{getsignals=TRUE}, a matrix with the projected signals shown in the plot is returned.
 }
 \description{
 This function plots an instance before and/or after its DB-CSP projection.
@@ -51,6 +54,9 @@ respectively. The paired vectors (a1-b1, a2-b2, ...) are plotted with the same c
 
 For example if \code{q=15} and \code{plot(object, vectors=16, pairs=FALSE)}, b1 (16-q=1) vector is
 shown.
+
+The number of rows and columns of the layout (mfrow, mfcol) can not be modified, as the function select them
+according to \code{before} and \code{after} parameters.
 }
 \examples{
 # Read data from 2 classes
@@ -59,7 +65,8 @@ y <- AR.data$five
 mydbcsp <- new("dbcsp", X1 = x, X2 = y)
 plot(mydbcsp)
 plot(mydbcsp,class=2,index=30,vectors=1:5,before=FALSE, legend=TRUE)
+pSignals <- plot(mydbcsp,class=2,index=30,vectors=1:5,before=FALSE, legend=TRUE,getsignals=TRUE)
 }
 \seealso{
-\code{\link[=dbcsp-class]{dbcsp}}, \code{\link[=print.dbcsp]{print}}, \code{\link[=summary.dbcsp]{summary}}, \code{\link{train}}, \code{\link{selectQ}}, \code{\link[=predict.dbcsp]{predict}}, \code{\link[=boxplot.dbcsp]{boxplot}}
+\code{\link[=dbcsp-class]{dbcsp}}, \code{\link[=print.dbcsp]{print}}, \code{\link[=summary.dbcsp]{summary}}, \code{\link[=train.dbcsp]{train}}, \code{\link{selectQ}}, \code{\link[=predict.dbcsp]{predict}}, \code{\link[=boxplot.dbcsp]{boxplot}}
 }

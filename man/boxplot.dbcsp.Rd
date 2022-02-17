@@ -4,7 +4,7 @@
 \alias{boxplot.dbcsp}
 \title{Boxplot for dbcsp object}
 \usage{
-\method{boxplot}{dbcsp}(x, vectors=1, pairs=TRUE, ordered_pairs=TRUE, show_log=TRUE, ...)
+\method{boxplot}{dbcsp}(x, vectors=1, pairs=TRUE, ordered_pairs=TRUE, show_log=TRUE,...)
 }
 \arguments{
 \item{x}{object of class \code{\link[=dbcsp-class]{dbcsp}}.}
@@ -17,7 +17,7 @@
 
 \item{show_log}{logical, if TRUE the logarithms of the variances are displayed, else the variances are displayed, by default \code{show_log=TRUE}.}
 
-\item{...}{optional arguments inherited from the generic \code{\link{boxplot}} method.}
+\item{...}{not currently used.}
 }
 \value{
 Displays the boxplot of the variances of the selected vectors.
@@ -42,6 +42,9 @@ respectively.
 
 For example if \code{q=15} and \code{boxplot(object, vectors=16, pairs=FALSE)}, b1 (16-q=1) vector is
 shown.
+
+Among the selected boxplots, the largest whiskers are obtained and just the outliers within these whiskers are shown, the rest are not displayed.
+With the outliers which are outside the whiskers it is not possible to get a good visualization.
 }
 \examples{
 # Read data from 2 classes
@@ -53,5 +56,5 @@ boxplot(mydbcsp,vectors=1:4,pairs=FALSE)
 boxplot(mydbcsp, vectors=c(1,4,7),ordered_pairs=FALSE)
 }
 \seealso{
-\code{\link[=dbcsp-class]{dbcsp}}, \code{\link[=print.dbcsp]{print}}, \code{\link[=summary.dbcsp]{summary}}, \code{\link{train}}, \code{\link{selectQ}}, \code{\link[=predict.dbcsp]{predict}}, \code{\link[=plot.dbcsp]{plot}}
+\code{\link[=dbcsp-class]{dbcsp}}, \code{\link[=print.dbcsp]{print}}, \code{\link[=summary.dbcsp]{summary}}, \code{\link[=train.dbcsp]{train}}, \code{\link{selectQ}}, \code{\link[=predict.dbcsp]{predict}}, \code{\link[=plot.dbcsp]{plot}}
 }

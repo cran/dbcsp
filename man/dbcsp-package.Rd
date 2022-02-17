@@ -26,6 +26,13 @@ ignore <- AR.data$ignore[1:15]
 # A mixture with euclidean distance and another one can be performed too, changing the mixture
 # parameter value.
 
+# mydbcsp <- new('dbcsp', handshake, ignore, type="minkowski", p=0.2)
+
+# A user-defined custom distance can be used too.
+
+fn <- function(x, y) mean(1 - cos(x - y))
+mydbcsp <- new("dbcsp", X1 = handshake, X2 = ignore, type="fn")
+
 # Regarding the classification, train, predict and selectQ functions can be used.
 # An LDA model can be train with the features extracted after performing the CSP, both with the
 # train function or using the training=TRUE parameter when creating the dbcsp object
@@ -67,9 +74,10 @@ plot(mydbcsp,class=2,index=1,before=FALSE,vectors = 1:5, legend=TRUE)
 # when changing show_log parameter to FALSE
 
 boxplot(mydbcsp, vectors=c(2,4,8))
+
 }
 \seealso{
-\code{\link[=dbcsp-class]{dbcsp}}, \code{\link[=print.dbcsp]{print}}, \code{\link[=summary.dbcsp]{summary}}, \code{\link{train}}, \code{\link{selectQ}}, \code{\link[=predict.dbcsp]{predict}}, \code{\link[=plot.dbcsp]{plot}}, \code{\link[=boxplot.dbcsp]{boxplot}}
+\code{\link[=dbcsp-class]{dbcsp}}, \code{\link[=print.dbcsp]{print}}, \code{\link[=summary.dbcsp]{summary}}, \code{\link[=train.dbcsp]{train}}, \code{\link{selectQ}}, \code{\link[=predict.dbcsp]{predict}}, \code{\link[=plot.dbcsp]{plot}}, \code{\link[=boxplot.dbcsp]{boxplot}}
 }
 \author{
 Itsaso Rodriguez Moreno \email{itsaso.rodriguez@ehu.eus}

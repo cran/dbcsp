@@ -9,7 +9,7 @@
 \arguments{
 \item{object}{object of class \code{\link[=dbcsp-class]{dbcsp}}.}
 
-\item{...}{optional arguments inherited from the generic \code{\link{summary}} method.}
+\item{...}{not currently used.}
 }
 \value{
 No return value, called for side effects.
@@ -34,5 +34,5 @@ mydbcsp <- new("dbcsp", X1 = x, X2 = y)
 summary(mydbcsp)
 }
 \seealso{
-\code{\link[=dbcsp-class]{dbcsp}}, \code{\link[=print.dbcsp]{print}}, \code{\link{train}}, \code{\link{selectQ}}, \code{\link[=predict.dbcsp]{predict}}, \code{\link[=plot.dbcsp]{plot}}, \code{\link[=boxplot.dbcsp]{boxplot}}
+\code{\link[=dbcsp-class]{dbcsp}}, \code{\link[=print.dbcsp]{print}}, \code{\link[=train.dbcsp]{train}}, \code{\link{selectQ}}, \code{\link[=predict.dbcsp]{predict}}, \code{\link[=plot.dbcsp]{plot}}, \code{\link[=boxplot.dbcsp]{boxplot}}
 }

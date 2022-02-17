@@ -35,10 +35,10 @@ selectQ(
 
 \item{folds}{integer, number of folds to use if CV is performed.}
 
-\item{seed}{numeric value, by default \code{seed=NULL}. Set a seed in case the results want to be replicable.}
+\item{seed}{numeric value, by default \code{seed=NULL}. Set a seed to ensure reproducible results.}
 }
 \value{
-A \code{data.frame} including the dimensions and their corresponding accuracies.
+A \code{data.frame} including the dimensions and their corresponding accuracy values.
 If \code{CV=TRUE}, for each dimension, the standard deviation of the accuracy values of the folds is also included in the data frame.
 }
 \description{
@@ -53,5 +53,5 @@ result <- selectQ(mydbcsp)
 print(result)
 }
 \seealso{
-\code{\link[=dbcsp-class]{dbcsp}}, \code{\link[=print.dbcsp]{print}}, \code{\link[=summary.dbcsp]{summary}}, \code{\link{train}}, \code{\link[=predict.dbcsp]{predict}}, \code{\link[=plot.dbcsp]{plot}}, \code{\link[=boxplot.dbcsp]{boxplot}}
+\code{\link[=dbcsp-class]{dbcsp}}, \code{\link[=print.dbcsp]{print}}, \code{\link[=summary.dbcsp]{summary}}, \code{\link[=train.dbcsp]{train}}, \code{\link[=predict.dbcsp]{predict}}, \code{\link[=plot.dbcsp]{plot}}, \code{\link[=boxplot.dbcsp]{boxplot}}
 }

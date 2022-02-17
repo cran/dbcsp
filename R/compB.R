@@ -1,29 +1,48 @@
-calculateDistance <- function(X, type){
+distanceMatrix <- function(X, distance,...){
+  rows <- dim(X)[1]
+  cols <- dim(X)[2]
+  Ds <- matrix(NA, nrow = rows, ncol = rows)
+  for(i in 1:(rows-1)){
+    for(j in (i+1):rows){
+      Ds[j,i] <- distance(X[i,],X[j,],...)
+    }
+  }
+  Ds <- as.dist(Ds)
+  return(Ds)
+}
+
+calculateDistance <- function(X, type,...){
 
   distances_TSdist <- c("infnorm", "ccor", "sts", "lb.keogh", "edr", "erp", "lcss", "fourier", "tquest", "dissim", "acf",
                         "pacf", "ar.lpc.ceps", "ar.mah", "ar.mah.statistic", "ar.mah.pvalue", "ar.pic", "cdm", "cid", "cor",
                         "cort", "int.per", "per", "mindist.sax", "ncd", "pred",  "spec.glk", "spec.isd", "spec.llr", "pdc",
                         "frechet", "tam")
 
-  distances_parallelDist <- c("bhjattacharyya", "bray", "canberra", "chord", "divergence", "dtw", "euclidean", "fJaccard",
+  distances_parallelDist <- c("bhjattacharyya", "bray", "canberra", "chord", "divergence", "dtw","euclidean", "fJaccard",
                               "geodesic", "hellinger", "kullback", "mahalanobis", "manhattan", "maximum", "minkowski",
-                              "podani", "soergel", "wave", "whittaker") #LAS DE BINARY INPUT VARIABLES NO LAS HE PUESTO
+                              "podani", "soergel", "wave", "whittaker") # DISTANCES WITH BINARY INPUT VARIABLES NOT USED
 
-  if(type==toupper(type)) type <- tolower(type) #si está en mayus pasar a minúscula
+  if(type==toupper(type)) type <- tolower(type) # if type in uppercase --> lowercase
 
   if(type %in% distances_parallelDist) dist_type <- 'parDist'
   else if(type %in% distances_TSdist) dist_type <- 'TSdist'
+  else if(exists(type)){
+    if(is.function(eval(parse(text=type)))) dist_type <- 'r_custom'
+    else dist_type <- 'parDist_custom'
+  }
   else stop('Invalid distance type. See ?dbcsp for more information.')
 
   Ds <- switch(
     dist_type,
-    'TSdist' = Ds <- plyr::llply(X, TSdist::TSDatabaseDistances, distance=type),
-    'parDist' = Ds <- plyr::llply(X, parallelDist::parDist, method=type)
+    'TSdist' = Ds <- plyr::llply(X, TSdist::TSDatabaseDistances, distance=type,...),
+    'parDist' = Ds <- plyr::llply(X, parallelDist::parDist, method=type,...),
+    'parDist_custom' = Ds <- plyr::llply(X, parallelDist::parDist, method="custom", func=eval(parse(text=type)),...),
+    'r_custom' = Ds <- plyr::llply(X, distanceMatrix, distance=eval(parse(text=type)),...)
   )
   return(Ds)
 }
 
-compB <- function(X, mixture, type, w, eig.tol = 1e-06, getWarning=TRUE)
+compB <- function(X, mixture, type, w, eig.tol = 1e-06, getWarning=TRUE,...)
 {
   # Put together all de Bi-s
   #
@@ -34,7 +53,7 @@ compB <- function(X, mixture, type, w, eig.tol = 1e-06, getWarning=TRUE)
     if(is.list(X)) n <- length(X)
     else n <- 1
     # DB
-    Ds <- calculateDistance(X,type)
+    Ds <- calculateDistance(X,type,...)
     # MIX
     if(mixture){
       Ds1 <- calculateDistance(X,'euclidean')
@@ -63,7 +82,6 @@ compB <- function(X, mixture, type, w, eig.tol = 1e-06, getWarning=TRUE)
       B <- Matrix::nearPD(B)$mat
       B <- as.matrix(B)
       if(getWarning) warning('Distance matrix was converted to be definite positive',immediate. = TRUE)
-      #warning("B was converted to be definite positive")
     }
   }
 

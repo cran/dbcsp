@@ -1,3 +1,24 @@
+remove_NA <- function(X){
+  # count NAs
+  countNA <- sum(is.na(X))
+  # if there is at least a NA
+  if(countNA!=0){
+    len <- length(X)
+    X <- zoo::na.approx(X, na.rm=FALSE)
+
+    # If first values still NA, replicate first non-NA value. Same with last values
+    NonNAindex <- which(!is.na(X))
+    # First and last nonNA values
+    firstNonNA <- min(NonNAindex)
+    lastNonNA <- max(NonNAindex)
+    if(length(NonNAindex)<len){
+      X[1:firstNonNA] <- X[firstNonNA]
+      X[lastNonNA:len] <- X[lastNonNA]
+    }
+  }
+  return(X)
+}
+
 estandarizar <- function(X, kte=10, centrarfila=FALSE)
 {
   if (centrarfila)
@@ -44,8 +65,8 @@ Bd <- function(D, X){
 
 calcVarianzas <- function(X, W)
 {
-  # Input: X, i-esimo EEG
-  # Output: varianza de la curva proyectada en las direcciones W
+  # Input: X, i-th EEG
+  # Output: variance of the projected curve in W directions
   diag(t(W)%*%X%*%t(X)%*%W)
 }
 
@@ -58,7 +79,7 @@ Mixture.dist <- function(d, w, eps=10^-10)
   #     eps: accuracy for numerical 0. Values in (-eps, eps) are considered as 0
   # Output:
   #     dmixt: Mixture distance --> w D1 + (1-w)D2/max{D2}*max{D1}
-  #            Tomamos como referencia la distancia euclidea, para luego, al rehacer la B, podamos añadir la X sin problema de unidades
+  #            Euclidean distance as reference, then when reconstructing B, X can be added without unit issue
   #-----------------------------------------
 
   k <- length(d)
@@ -67,4 +88,23 @@ Mixture.dist <- function(d, w, eps=10^-10)
   M <- unlist(lapply(d, max))
   dmixt <- w*d[[1]] + (1-w)*d[[2]]/M[2]*M[1]
   return(dmixt)
+}
+
+# Get parameters in a list, name and value
+grabFunctionParameters <- function() {
+  pf <- parent.frame()
+  args_names <- ls(envir = pf, all.names = TRUE, sorted = FALSE)
+  if("..." %in% args_names) {
+    dots <- eval(quote(list(...)), envir = pf)
+  }  else {
+    dots = list()
+  }
+  args_names <- sapply(setdiff(args_names, "..."), as.name)
+  if(length(args_names)) {
+    not_dots <- lapply(args_names, eval, envir = pf)
+  } else {
+    not_dots <- list()
+  }
+  out <- c(not_dots, dots)
+  out[names(out) != ""] # remove unnamed values in ... (if any)
 }
