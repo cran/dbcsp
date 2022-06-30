@@ -1,6 +1,6 @@
 Package: dbcsp
 Title: Distance-Based Common Spatial Patterns
-Version: 0.0.2.0
+Version: 0.0.2.1
 Authors@R: c(
     person("Itziar", "Irigoien", , "itziar.irigoien@ehu.eus", role = "aut"),
     person("Concepción", "Arenas", , "carenas@ub.edu", role = "aut"),
@@ -27,11 +27,11 @@ Suggests: testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.0
 NeedsCompilation: no
-Packaged: 2022-02-17 15:16:24 UTC; bee
+Packaged: 2022-06-30 13:20:06 UTC; bee
 Author: Itziar Irigoien [aut],
   Concepción Arenas [aut],
   Itsaso Rodríguez-Moreno [cre, aut]
 Repository: CRAN
-Date/Publication: 2022-02-17 16:32:03 UTC
+Date/Publication: 2022-06-30 14:20:02 UTC

@@ -12,12 +12,22 @@ CSP <- function(X1, X2, q=15, mixture=FALSE,type='EUCL', w=0.5, vectors=TRUE, ei
   # For class 1
   n1 <- length(X1)
   #B1 <- compB(X=X1, mixture=mixture, type=type, w=w, eig.tol=eig.tol ,getWarning=getWarning,...)
-  B1 <- do.call(compB, c(list(X=X1, mixture=mixture, type=type, w=w, eig.tol=eig.tol ,getWarning=getWarning),more))
+  B1_1 <- do.call(compB, c(list(X=X1, mixture=mixture, type=type, w=w, eig.tol=eig.tol ,getWarning=getWarning),more))
+  B1 <- B1_1$B
+  B1_warn <- B1_1$warn
 
   # For class 2
   n2 <- length(X2)
   #B2 <- compB(X=X2, mixture=mixture, type=type, w=w, eig.tol=eig.tol, getWarning=getWarning,...)
-  B2 <- do.call(compB, c(list(X=X2, mixture=mixture, type=type, w=w, eig.tol=eig.tol, getWarning=getWarning),more))
+  B2_1 <- do.call(compB, c(list(X=X2, mixture=mixture, type=type, w=w, eig.tol=eig.tol, getWarning=getWarning),more))
+  B2 <- B2_1$B
+  B2_warn <- B2_1$warn
+
+  # DISPLAY WARNING: indicating which matrices are converted to be definite positive
+  if(B1_warn && B2_warn) warning('Distance matrices for X1 and X2 were converted to be definite positive',immediate. = TRUE)
+  else if(B1_warn) warning('Distance matrix for X1 was converted to be definite positive',immediate. = TRUE)
+  else if(B2_warn) warning('Distance matrix for X2 was converted to be definite positive',immediate. = TRUE)
+
 
   #------------------------------
   result <- geigen::geigen(B1, B2)

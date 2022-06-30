@@ -44,6 +44,7 @@ calculateDistance <- function(X, type,...){
 
 compB <- function(X, mixture, type, w, eig.tol = 1e-06, getWarning=TRUE,...)
 {
+  is_warning = FALSE
   # Put together all de Bi-s
   #
   # EUCL
@@ -81,9 +82,12 @@ compB <- function(X, mixture, type, w, eig.tol = 1e-06, getWarning=TRUE,...)
     {
       B <- Matrix::nearPD(B)$mat
       B <- as.matrix(B)
-      if(getWarning) warning('Distance matrix was converted to be definite positive',immediate. = TRUE)
+      if(getWarning){
+        is_warning = TRUE
+        #warning('Distance matrix was converted to be definite positive',immediate. = TRUE)
+      }
     }
   }
 
-  return(B)
+  return(list(B=B,warn=is_warning))
 }

@@ -1,3 +1,11 @@
+# dbcsp 0.0.2.1
+
+## Bug fixes
+
+* Warning message changed. If the minimum eigenvalue is below the tolerance indicated by `eig.tol` when creating the `dbcsp` object, average covariance matrices are replaced by the most similar matrix that is positive definite and a warning message is printed to make the user aware of it.
+
+---
+
 # dbcsp 0.0.2.0
 
 ## New features
