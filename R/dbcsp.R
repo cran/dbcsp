@@ -37,19 +37,19 @@
 #'
 #' The supported distances for \code{type} are these ones:
 #'
-#' - Included in \code{\link[=TSDatabaseDistances]{TSdist}}: infnorm, ccor, sts, lb.keogh, edr, erp, lcss, fourier, tquest, dissim, acf, pacf, ar.lpc.ceps, ar.mah,
+#' - Included in \code{\link[TSdist]{TSDatabaseDistances}}: infnorm, ccor, sts, lb.keogh, edr, erp, lcss, fourier, tquest, dissim, acf, pacf, ar.lpc.ceps, ar.mah,
 #' ar.mah.statistic, ar.mah.pvalue, ar.pic, cdm, cid, cor, cort, int.per, per, mindist.sax, ncd, pred, spec.glk, spec.isd,
 #' spec.llr, pdc, frechet, tam.
 #'
-#' - Included in \code{\link{parallelDist}}: bhjattacharyya, bray, canberra, chord, divergence, dtw, euclidean, fJaccard, geodesic, hellinger,
+#' - Included in \code{\link[parallelDist]{parDist}}: bhjattacharyya, bray, canberra, chord, divergence, dtw, euclidean, fJaccard, geodesic, hellinger,
 #' kullback, mahalanobis, manhattan, maximum, minkowski, podani, soergel, wave, whittaker.
 #'
 #' - It is possible to use a custom distance. The name of the custom distance function is passed as character to the \code{type} parameter.
-#'  In order to use the \code{\link{parallelDist}} custom distance option, the custom function must be defined as
-#'  explained in "\code{Details: User-defined distance functions}" part of \code{\link{parallelDist}} documentation.
+#'  In order to use the \code{\link[parallelDist]{parDist}} custom distance option, the custom function must be defined as
+#'  explained in "\code{Details: User-defined distance functions}" part of \code{\link[parallelDist]{parDist}} documentation.
 #'  See Examples section below.
 #'
-#' The additional parameters for the selected distance (see \code{\link[=TSDatabaseDistances]{TSdist}}, \code{\link{parallelDist}}) can be passed
+#' The additional parameters for the selected distance (see \code{\link[TSdist]{TSDatabaseDistances}}, \code{\link[parallelDist]{parDist}}) can be passed
 #' as parameters when creating the object, which will be saved in \code{more} slot. See Examples section below.
 #'
 #' The output is a list containing this information (\code{object@out}):
@@ -392,7 +392,7 @@ setMethod("train.dbcsp",
 #' @details It gives the predictions for the test data using the model saved in the object, which has been previously trained with
 #' the \code{\link{train.dbcsp}} function. If the \code{true_targets} are indicated, the confusion matrix and obtained accuracy value are
 #' returned too.
-#' @return The values returned by the LDA \code{\link[=predict.lda]{predict}} function, a list with these components:
+#' @return The values returned by the LDA \code{\link[MASS]{predict.lda}} function, a list with these components:
 #' - \code{class} The MAP classification (a factor)
 #' - \code{posterior} Posterior probabilities for the classes
 #' - \code{x} The scores of test cases on up to dimen discriminant variables

@@ -1,3 +1,11 @@
+# dbcsp 0.0.2.2
+
+## Bug fixes
+
+* Fixed issue with Rd cross-references; now properly using package anchors to ensure links work correctly.
+
+---
+
 # dbcsp 0.0.2.1
 
 ## Bug fixes

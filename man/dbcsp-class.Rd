@@ -15,18 +15,18 @@ using \code{\link[zoo]{na.approx}} function. These new interpolated matrices are
 
 The supported distances for \code{type} are these ones:
 \itemize{
-\item Included in \code{\link[=TSDatabaseDistances]{TSdist}}: infnorm, ccor, sts, lb.keogh, edr, erp, lcss, fourier, tquest, dissim, acf, pacf, ar.lpc.ceps, ar.mah,
+\item Included in \code{\link[TSdist]{TSDatabaseDistances}}: infnorm, ccor, sts, lb.keogh, edr, erp, lcss, fourier, tquest, dissim, acf, pacf, ar.lpc.ceps, ar.mah,
 ar.mah.statistic, ar.mah.pvalue, ar.pic, cdm, cid, cor, cort, int.per, per, mindist.sax, ncd, pred, spec.glk, spec.isd,
 spec.llr, pdc, frechet, tam.
-\item Included in \code{\link{parallelDist}}: bhjattacharyya, bray, canberra, chord, divergence, dtw, euclidean, fJaccard, geodesic, hellinger,
+\item Included in \code{\link[parallelDist]{parDist}}: bhjattacharyya, bray, canberra, chord, divergence, dtw, euclidean, fJaccard, geodesic, hellinger,
 kullback, mahalanobis, manhattan, maximum, minkowski, podani, soergel, wave, whittaker.
 \item It is possible to use a custom distance. The name of the custom distance function is passed as character to the \code{type} parameter.
-In order to use the \code{\link{parallelDist}} custom distance option, the custom function must be defined as
-explained in "\code{Details: User-defined distance functions}" part of \code{\link{parallelDist}} documentation.
+In order to use the \code{\link[parallelDist]{parDist}} custom distance option, the custom function must be defined as
+explained in "\code{Details: User-defined distance functions}" part of \code{\link[parallelDist]{parDist}} documentation.
 See Examples section below.
 }
 
-The additional parameters for the selected distance (see \code{\link[=TSDatabaseDistances]{TSdist}}, \code{\link{parallelDist}}) can be passed
+The additional parameters for the selected distance (see \code{\link[TSdist]{TSDatabaseDistances}}, \code{\link[parallelDist]{parDist}}) can be passed
 as parameters when creating the object, which will be saved in \code{more} slot. See Examples section below.
 
 The output is a list containing this information (\code{object@out}):

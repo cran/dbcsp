@@ -16,7 +16,7 @@
 \item{...}{not currently used.}
 }
 \value{
-The values returned by the LDA \code{\link[=predict.lda]{predict}} function, a list with these components:
+The values returned by the LDA \code{\link[MASS]{predict.lda}} function, a list with these components:
 \itemize{
 \item \code{class} The MAP classification (a factor)
 \item \code{posterior} Posterior probabilities for the classes

@@ -2,6 +2,7 @@
 % Please edit documentation in R/dbcsp-package.R
 \docType{package}
 \name{dbcsp-package}
+\alias{dbcsp}
 \alias{dbcsp-package}
 \title{Distance-Based Common Spatial Patterns}
 \description{
